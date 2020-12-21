@@ -1,0 +1,1 @@
+web: npm run build --port=4201 && npm start

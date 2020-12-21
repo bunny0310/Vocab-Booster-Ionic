@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar style="--background: #cc0000; --color:#f2f2f2">
+      <ion-thumbnail slot="start">
+          <ion-img src="assets/favicon.png"></ion-img>
+      </ion-thumbnail>
+    <ion-title>Vocab Booster</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div id="container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Login</ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <ion-item lines="full">
+            <ion-icon name="mail-outline"></ion-icon>
+            <ion-input
+              placeholder="Username"
+              type="text"
+              formControlName="username"
+            ></ion-input>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <ion-input
+              placeholder="Password"
+              type="password"
+              formControlName="password">
+            </ion-input>
+          </ion-item>
+          <ion-button expand="full" type="submit" [disabled]="!loginForm.valid" color="primary">LOGIN</ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card> 
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Footer</ion-title>
+  </ion-toolbar>
+</ion-footer>
