@@ -3,11 +3,11 @@
         <ion-thumbnail slot="start">
             <ion-img src="assets/favicon.png"></ion-img>
         </ion-thumbnail>
-      <ion-title>Vocab Booster | Home</ion-title>
+      <ion-title>SHUFFLE</ion-title>
       <ion-buttons slot="end">
-          <ion-button (click)="authService.logout()">
+          <button ion-button color="dark" large (click)="authService.logout()">
               LOGOUT
-            </ion-button>
+            </button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
@@ -24,30 +24,39 @@
             <ion-card-subtitle>{{word.meaning}}</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <ion-item>
+            <ion-list>
               <h5>Sentences:</h5>
-              <ion-card *ngFor="let sentence of word.sentence" style="width: auto; height: auto">
-                  <ion-card-content>{{sentence.tag}}</ion-card-content>
-              </ion-card>
-            </ion-item>
-            <ion-item>
+              <ion-item *ngFor="let sentence of word.sentence">
+                  <ion-card style="width: 100%;">
+                      <ion-card-content style="word-wrap: break-word;!important">{{sentence.tag}}</ion-card-content>
+                  </ion-card>
+                  <br>
+              </ion-item>
+            </ion-list>
+            <ion-list>
               <h5>Tags:</h5>
-              <ion-card *ngFor="let tag of word.tags" style="width: auto; height: auto">
+              <ion-item *ngFor="let tag of word.tags">
+              <ion-card style="width: auto; height: auto">
                   <ion-card-content>{{tag.tag}}</ion-card-content>
               </ion-card>
             </ion-item>
-            <ion-item>
+            </ion-list>
+            <ion-list>
               <h5>Types:</h5>
-              <ion-card *ngFor="let type of word.types" style="width: auto; height: auto">
-                  <ion-card-content>{{type}}</ion-card-content>
-              </ion-card>
-            </ion-item>
-            <ion-item>
+              <ion-item *ngFor="let type of word.types">
+                <ion-card style="width: auto; height: auto">
+                    <ion-card-content>{{type}}</ion-card-content>
+                </ion-card>
+              </ion-item>
+            </ion-list>
+            <ion-list>
                 <h5>Synonyms:</h5>
-                <ion-card *ngFor="let synonym of word.synonyms" style="width: auto; height: auto">
+                <ion-item *ngFor="let synonym of word.synonyms">
+                <ion-card style="width: auto; height: auto">
                     <ion-card-content>{{synonym.tag}}</ion-card-content>
                 </ion-card>
-            </ion-item>
+              </ion-item>
+            </ion-list>
           </ion-card-content>
         </ion-card>
     </ion-item>
