@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-header',
@@ -9,7 +10,7 @@ import { Title } from '@angular/platform-browser';
 export class HeaderPage implements OnInit {
 
   @Input() title;
-  constructor() { }
+  constructor(public authService: AuthService) { }
 
   ngOnInit() {
   }
