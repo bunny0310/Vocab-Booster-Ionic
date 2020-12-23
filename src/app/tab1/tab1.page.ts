@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { ApiService } from '../api.service';
 import { AuthService } from '../auth.service';
 
@@ -7,12 +7,16 @@ import { AuthService } from '../auth.service';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page implements OnInit {
+export class Tab1Page implements OnInit, OnChanges{
   loading = false;
   words: [] = [];
   skeletonArray: number[] = [1, 1, 1, 1, 1];
   constructor(private APIService: ApiService, public authService: AuthService) {}
   ngOnInit() {
+    this.getWords(null);
+  }
+
+  ngOnChanges() {
     this.getWords(null);
   }
   doRefresh(event) {
