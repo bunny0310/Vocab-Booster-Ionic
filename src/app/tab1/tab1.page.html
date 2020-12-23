@@ -1,16 +1,4 @@
-<ion-header>
-    <ion-toolbar style="--background: #cc0000; --color:#f2f2f2">
-        <ion-thumbnail slot="start">
-            <ion-img src="assets/favicon.png"></ion-img>
-        </ion-thumbnail>
-      <ion-title>SHUFFLE</ion-title>
-      <ion-buttons slot="end">
-          <ion-button color="light" large (click)="authService.logout()">
-              LOGOUT
-            </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
+  <app-header title="Shuffle"></app-header>
 
 <ion-content [fullscreen]="true">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">

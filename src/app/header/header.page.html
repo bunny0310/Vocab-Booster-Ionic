@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar style="--background: #cc0000; --color:#f2f2f2">
+      <ion-thumbnail slot="start">
+          <ion-img src="assets/favicon.png"></ion-img>
+      </ion-thumbnail>
+    <ion-title>{{title}}</ion-title>
+    <ion-buttons slot="end">
+        <ion-button color="light" large (click)="authService.logout()">
+            LOGOUT
+          </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
