@@ -4,6 +4,41 @@
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
+  <ion-segment [(ngModel)]="sectionSelected" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="{{sections.first}}">
+      <ion-label>No Filters</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="{{sections.second}}">
+      <ion-label>Filters</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-row *ngIf="filtered && filtersApplied">
+    <ion-col>
+
+    </ion-col>
+    <ion-col>
+        <ion-badge color="danger">Filters Applied
+            <ion-icon name="close" (click)="clearFilter()"></ion-icon>
+        </ion-badge>
+    </ion-col>
+  </ion-row>
+  <ion-item *ngIf="filtered">
+      <ion-label>Select a filter</ion-label>
+      <ion-select placeholder="None" [formControl]="type">
+          <ion-select-option value="">No filters</ion-select-option>
+          <ion-select-option value="Name">Name</ion-select-option>
+          <ion-select-option value="Tags">Tags</ion-select-option>
+          <ion-select-option value="Meaning">Meaning</ion-select-option>
+          <ion-select-option value="Synonyms">Synonyms</ion-select-option>
+      </ion-select>
+    <!-- Searchbar with cancel button shown on focus -->
+    <ion-searchbar style="width: 50% !important" showCancelButton="focus" [formControl]="keyword"></ion-searchbar>
+    <ion-button style="--background: #cc0000; --color:#f2f2f2" (click)="applyFilters()">
+      <ion-icon name="search">
+      </ion-icon>
+    </ion-button>
+  </ion-item>
+
   <ion-list *ngIf="!loading" lines="none">
     <ion-item *ngFor="let word of words" >
         <ion-card style="min-width: 200px; width: auto">

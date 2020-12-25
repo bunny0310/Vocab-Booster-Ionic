@@ -4,7 +4,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Plugins } from '@capacitor/core';
+import { HTTP } from '@ionic-native/http/ngx';
 
+const {Http} = Plugins;
 const url = 'https://vocab-booster.herokuapp.com';
 
 @Component({
@@ -18,7 +21,7 @@ export class LoginPage implements OnInit {
     username: new FormControl('', [Validators.required, Validators.minLength(5)]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
   });
-  constructor(private httpClient: HttpClient, private router: Router) { }
+  constructor(private httpClient: HttpClient, private router: Router, private http: HTTP) { }
 
   ngOnInit() {
   }
@@ -52,7 +55,34 @@ export class LoginPage implements OnInit {
       console.log('setting');
       this.router.navigate(['/']);
     });
-  }
+
+
+
+    // const headers = new Headers();
+    // headers.append('Content-Type', 'application/json');
+    // const options = {headers};
+    // this.http.post(url + '/api/login', formData, options)
+    // .then((res) => {
+    //   console.log('running on a simulator');
+    //   const user: any = res;
+    //   localStorage.setItem('user-vb-responsive', user.username);
+    //   console.log(res);
+    //   this.router.navigate(['/']);
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
+
+  //   Http.request({
+  //     method: 'post',
+  //     url: url + '/api/login',
+  //     data: formData,
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     }
+  //   }).then((data) => {
+  //     console.log(data)
+  //   })
+   }
 
   private handleError(error: HttpErrorResponse) {
     if (error.status === 401) {

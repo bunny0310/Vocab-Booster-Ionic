@@ -1,7 +1,7 @@
 import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { Tab1Page } from './tab1.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
@@ -12,10 +12,11 @@ import { HeaderPageModule } from '../header/header.module';
   imports: [
     IonicModule,
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     ExploreContainerComponentModule,
     Tab1PageRoutingModule,
-    HeaderPageModule
+    HeaderPageModule,
+    FormsModule
   ],
   declarations: [Tab1Page]
 })

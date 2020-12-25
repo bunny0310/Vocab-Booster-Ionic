@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HeaderPageModule } from './header/header.module';
+import { HTTP } from '@ionic-native/http/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,6 +19,7 @@ import { HeaderPageModule } from './header/header.module';
   providers: [
     StatusBar,
     SplashScreen,
+    HTTP,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
