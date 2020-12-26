@@ -2,20 +2,20 @@
 <app-header title="Add word"></app-header>
 <ion-content [fullscreen]="true"> 
     <div id="container">
-        <ion-card>
+        <ion-card *ngIf="!loading"> 
             <ion-card-header>
               <ion-card-title>Add Word</ion-card-title>
             </ion-card-header>
           
             <ion-card-content>
-              <form [formGroup]="addWordForm"> 
+              <form [formGroup]="addWordForm" (ngSubmit)="addWord()"> 
                 <ion-item>
                     <ion-label position="floating">Name</ion-label>
-                    <ion-input></ion-input>
+                    <ion-input formControlName="name"></ion-input>
                 </ion-item>
                 <ion-item>
                     <ion-label position="floating">Meaning</ion-label>
-                    <ion-input></ion-input>
+                    <ion-input formControlName="meaning"></ion-input>
                 </ion-item>
                 <ion-item>
                   <ion-item>
@@ -27,8 +27,65 @@
                     <ion-label position="floating">Sentences</ion-label>
                     <ion-input (keyup)= "addSentence($event)" formControlName="sentence"></ion-input>
                 </ion-item>
+                <ion-item>
+                  <ion-item>
+                    <ion-chip *ngFor="let t of tags; let i = index;">
+                        <ion-label>{{t}}</ion-label>
+                        <ion-icon name="close-outline" (click)="removeTag(i)"></ion-icon>
+                    </ion-chip>
+                  </ion-item>
+                  <ion-label position="floating">Tags</ion-label>
+                  <ion-input (keyup)= "addTag($event)" formControlName="tag"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Type(s)</ion-label>
+                  <ion-select placeholder="Select type(s)" multiple="true" formControlName="types">
+                    <ion-select-option value="noun">Noun</ion-select-option>
+                    <ion-select-option value="verb">Verb</ion-select-option>
+                    <ion-select-option value="adjective">Adjective</ion-select-option>
+                    <ion-select-option value="phrasal verb">Phrasal Verb</ion-select-option>
+                    <ion-select-option value="adverb">Adverb</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item>
+                  <ion-item>
+                    <ion-chip *ngFor="let s of synonyms; let i = index;">
+                        <ion-label>{{s}}</ion-label>
+                        <ion-icon name="close-outline" (click)="removeSynonym(i)"></ion-icon>
+                    </ion-chip>
+                  </ion-item>
+                <ion-label position="floating">Synonyms</ion-label>
+                <ion-input (keyup)= "addSynonym($event)" formControlName="synonym"></ion-input>
+              </ion-item>
+              <ion-button expand="full" type="submit" [disabled]="!addWordForm.valid" style="--background-color: #cc0000">Add Word</ion-button>
               </form>
             </ion-card-content>
-          </ion-card>
+        </ion-card>
+        <ion-card *ngIf="loading">          
+            <ion-card-content>
+              <form [formGroup]="addWordForm" (ngSubmit)="addWord()"> 
+                <ion-item>
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                </ion-item>
+                <ion-item>
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                </ion-item>
+                <ion-item>
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                </ion-item>
+                <ion-item>
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                </ion-item>
+                <ion-item>
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                </ion-item>
+                <ion-item>
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                </ion-item>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              </form>
+            </ion-card-content>
+        </ion-card>
+
     </div>
 </ion-content>

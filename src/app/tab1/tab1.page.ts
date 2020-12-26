@@ -56,6 +56,7 @@ export class Tab1Page implements OnInit, OnChanges{
   clearFilter() {
     this.filtersApplied = false;
     this.filtered = false;
+    this.sections.sectionSelected = this.sections.first;
     this.keyword.setValue('');
     this.type.setValue('');
     this.getWords(null);
