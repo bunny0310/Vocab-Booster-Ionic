@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, ValidatorFn, AbstractControl, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { AuthService } from '../auth.service';
@@ -11,7 +11,7 @@ const url = 'https://vocab-booster.herokuapp.com';
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss']
 })
-export class Tab2Page {
+export class Tab2Page implements OnInit{
   sentences: string[] = [];
   loading = false;
   tags: string[] = [];
@@ -27,6 +27,14 @@ export class Tab2Page {
   constructor(private toastController: ToastController,
               private authService: AuthService,
               private http: HttpClient, private router: Router) {}
+  
+  ngOnInit() {
+    this.addWordForm.reset();
+  }
+
+  ionViewWillEnter() {
+    this.addWordForm.reset();
+  }
 
   async presentToast(msg) {
     const toast = await this.toastController.create({
