@@ -4,7 +4,7 @@
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
-  <ion-segment [(ngModel)]="sectionSelected" (ionChange)="segmentChanged($event)">
+  <ion-segment [(ngModel)]="sections.sectionSelected" (ionChange)="segmentChanged($event)">
     <ion-segment-button value="{{sections.first}}">
       <ion-label>No Filters</ion-label>
     </ion-segment-button>
