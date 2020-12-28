@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Subject } from 'rxjs';
 
-// const url = 'https://vocab-booster.herokuapp.com';
-const url = 'http://localhost:3000';
+const url = 'https://vocab-booster.herokuapp.com';
+// const url = 'http://localhost:3000';
 
 @Injectable({
   providedIn: 'root'
