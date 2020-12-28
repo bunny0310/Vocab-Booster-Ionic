@@ -30,16 +30,13 @@ export class Tab2Page implements OnInit{
 
   ngOnInit() {
     this.addWordForm.reset();
-    this.sentences = [];
-    this.tags = [];
-    this.synonyms = [];
   }
 
   ionViewWillEnter() {
     this.addWordForm.reset();
-    this.sentences = [];
-    this.tags = [];
-    this.synonyms = [];
+    // this.sentences = [];
+    // this.tags = [];
+    // this.synonyms = [];
   }
 
   async presentToast(msg) {
