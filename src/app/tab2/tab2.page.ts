@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, ValidatorFn, AbstractControl, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { AuthService } from '../auth.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 const url = 'https://vocab-booster.herokuapp.com';
@@ -27,13 +27,19 @@ export class Tab2Page implements OnInit{
   constructor(private toastController: ToastController,
               private authService: AuthService,
               private http: HttpClient, private router: Router) {}
-  
+
   ngOnInit() {
     this.addWordForm.reset();
+    this.sentences = [];
+    this.tags = [];
+    this.synonyms = [];
   }
 
   ionViewWillEnter() {
     this.addWordForm.reset();
+    this.sentences = [];
+    this.tags = [];
+    this.synonyms = [];
   }
 
   async presentToast(msg) {
@@ -66,7 +72,7 @@ emptyArrayValidation(arr): ValidatorFn {
       this.addWordForm.get('synonym').reset();
     }
   }
- 
+
   removeSentence(i) {
     this.sentences.splice(i, 1);
   }
@@ -102,10 +108,11 @@ emptyArrayValidation(arr): ValidatorFn {
       types,
       synonyms
     };
-    const username = this.authService.isAuthenticated() ? localStorage.getItem('user-vb-responsive') : null;
+    const username = this.authService.isAuthenticated() ? this.authService.getUsername(localStorage.getItem('user-vb-responsive') ) : '';
     if (username !== null) {
       this.loading = true;
-      this.http.post(url + '/api/add-word', {word: JSON.stringify(word).replace('\'', '"'), username}, {observe: 'response'}).
+      const headers = new HttpHeaders({Authorization: 'Bearer ' + localStorage.getItem('user-vb-responsive')});
+      this.http.post(url + '/api/add-word', {word: JSON.stringify(word).replace('\'', '"'), username}, {observe: 'response', headers}).
       subscribe((response) => {
         if (response.status === 200) {
           this.presentToast('Your word has been added!');
