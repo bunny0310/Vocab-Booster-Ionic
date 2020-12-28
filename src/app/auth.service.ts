@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import jwtDecode, * as jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import { Subject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-// const url = 'https://vocab-booster.herokuapp.com';
-const url = 'http://localhost:3000';
+const url = 'https://vocab-booster.herokuapp.com';
+// const url = 'http://localhost:3000';
 @Injectable({
   providedIn: 'root'
 })

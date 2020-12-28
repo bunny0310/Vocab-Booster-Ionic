@@ -9,8 +9,8 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { ToastController } from '@ionic/angular';
 
 const {Http} = Plugins;
-// const url = 'https://vocab-booster.herokuapp.com';
-const url = 'http://localhost:3000';
+const url = 'https://vocab-booster.herokuapp.com';
+// const url = 'http://localhost:3000';
 
 @Component({
   selector: 'app-login',
