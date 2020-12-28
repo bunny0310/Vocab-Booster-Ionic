@@ -6,9 +6,11 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
 import { HTTP } from '@ionic-native/http/ngx';
+import { ToastController } from '@ionic/angular';
 
 const {Http} = Plugins;
-const url = 'https://vocab-booster.herokuapp.com';
+// const url = 'https://vocab-booster.herokuapp.com';
+const url = 'http://localhost:3000';
 
 @Component({
   selector: 'app-login',
@@ -21,13 +23,12 @@ export class LoginPage implements OnInit {
     username: new FormControl('', [Validators.required, Validators.minLength(5)]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
   });
-  constructor(private httpClient: HttpClient, private router: Router, private http: HTTP) { }
+  constructor(private httpClient: HttpClient, private router: Router, private http: HTTP, private toastController: ToastController) { }
 
   ngOnInit() {
   }
 
   onSubmit() {
-    console.log(this.loginForm);
     if (this.loginForm === null) {
       return;
     }
@@ -50,10 +51,10 @@ export class LoginPage implements OnInit {
       // if (error.status === 401) {
       //   this.invalidLogin = true;
       // }
-      const user: any = response.body;
-      localStorage.setItem('user-vb-responsive', user.username);
-      console.log('setting');
-      this.router.navigate(['/']);
+      const jwt: any = response.body;
+      console.log(jwt);
+      localStorage.setItem('user-vb-responsive', jwt.token);
+      this.router.navigate(['']);
     });
 
 
@@ -83,10 +84,16 @@ export class LoginPage implements OnInit {
   //     console.log(data)
   //   })
    }
+   async presentToast(msg) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000
+    });
+    toast.present();
+  }
 
   private handleError(error: HttpErrorResponse) {
-    if (error.status === 401) {
-    }
+    this.presentToast('Invalid login credentials!');
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong.
     // Return an observable with a user-facing error message.

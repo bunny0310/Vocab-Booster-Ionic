@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Subject } from 'rxjs';
 
-const url = 'https://vocab-booster.herokuapp.com';
+// const url = 'https://vocab-booster.herokuapp.com';
+const url = 'http://localhost:3000';
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +23,11 @@ export class ApiService {
     } else if (mode === 'search') {
       endpoint = '/api/search-words';
     }
-    const username = this.authService.isAuthenticated() ? localStorage.getItem('user-vb-responsive') : '';
+    const username = this.authService.isAuthenticated() ? this.authService.getUsername(localStorage.getItem('user-vb-responsive') ) : '';
     console.log(username);
     if (username !== '') {
-      this.http.post<[]>(url + endpoint, {username, keyword, type}, {withCredentials: true})
+      const headers = new HttpHeaders({Authorization: 'Bearer ' + localStorage.getItem('user-vb-responsive')});
+      this.http.post<[]>(url + endpoint, {username, keyword, type}, {withCredentials: true, headers})
       .subscribe((res: any) => {
         this.words = res.data;
         this.wordsUpdated.next({data: res.data});
