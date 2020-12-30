@@ -1,0 +1,12 @@
+<ion-item>
+  <ion-toggle (ionChange)="filtersService.setRandom($event)" [checked]="filtersService.random"></ion-toggle>
+  <ion-label>Random</ion-label>
+</ion-item>
+<ion-item>
+  <ion-toggle (ionChange)="filtersService.setName($event)" [checked]="filtersService.name"></ion-toggle>
+  <ion-label>Name</ion-label>
+  <ion-item *ngIf="filtersService.getName()">
+    <ion-label position="floating">Name:</ion-label>
+    <ion-input></ion-input>
+  </ion-item>
+</ion-item>
