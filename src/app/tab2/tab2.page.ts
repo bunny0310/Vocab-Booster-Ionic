@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 const url = 'https://vocab-booster.herokuapp.com';
+// const url = 'http://localhost:3000';
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
@@ -83,15 +84,15 @@ emptyArrayValidation(arr): ValidatorFn {
   addWord() {
     const sentences = [];
     for (const sentence of this.sentences) {
-      sentences.push({tag: sentence});
+      sentences.push(sentence);
     }
     const synonyms = [];
     for (const s of this.synonyms) {
-      synonyms.push({tag: s});
+      synonyms.push(s);
     }
     const tags = [];
     for (const t of this.tags) {
-      tags.push({tag: t});
+      tags.push(t);
     }
     const types = [];
     for (const t of this.addWordForm.get('types').value) {
