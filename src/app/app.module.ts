@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -15,7 +16,8 @@ import { HTTP } from '@ionic-native/http/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, HeaderPageModule],
+  imports: [BrowserModule, CommonModule,
+    IonicModule.forRoot(), AppRoutingModule, HttpClientModule, HeaderPageModule],
   providers: [
     StatusBar,
     SplashScreen,

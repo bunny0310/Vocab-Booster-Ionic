@@ -1,44 +1,24 @@
-  <app-header title="Shuffle"></app-header>
+  <app-header title="Your words"></app-header>
 
 <ion-content [fullscreen]="true">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
-      </ion-refresher>
-  <ion-segment [(ngModel)]="sections.sectionSelected" (ionChange)="segmentChanged($event)">
-    <ion-segment-button value="{{sections.first}}">
-      <ion-label>No Filters</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="{{sections.second}}">
-      <ion-label>Filters</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-  <ion-row *ngIf="filtered && filtersApplied">
-    <ion-col>
-
-    </ion-col>
-    <ion-col>
-        <ion-badge color="danger">Filters Applied
-            <ion-icon name="close" (click)="clearFilter()"></ion-icon>
-        </ion-badge>
-    </ion-col>
-  </ion-row>
-  <ion-item *ngIf="filtered">
-      <ion-label>Select a filter</ion-label>
-      <ion-select placeholder="None" [formControl]="type">
-          <ion-select-option value="">No filters</ion-select-option>
-          <ion-select-option value="Name">Name</ion-select-option>
-          <ion-select-option value="Tags">Tags</ion-select-option>
-          <ion-select-option value="Meaning">Meaning</ion-select-option>
-          <ion-select-option value="Synonyms">Synonyms</ion-select-option>
-      </ion-select>
-    <!-- Searchbar with cancel button shown on focus -->
-    <ion-searchbar style="width: 50% !important" showCancelButton="focus" [formControl]="keyword"></ion-searchbar>
-    <ion-button style="--background: #cc0000; --color:#f2f2f2" (click)="applyFilters()">
-      <ion-icon name="search">
-      </ion-icon>
-    </ion-button>
-  </ion-item>
-
+    </ion-refresher>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-item>
+            <ion-button tooltip="Sort words" style="--background: #cc0000;" [ngStyle]="{'color': sorted ? 'green' : 'white'}" (click)="sort()"><ion-icon name="funnel"></ion-icon></ion-button>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="shuffle" [ngClass]="{'active-toggle' : randomFeature, 'inactive-toggle' : !randomFeature}"></ion-icon><ion-toggle style="--background-checked: #cc0000; --handle-background-checked: white;" [checked]="randomFeature" (ionChange)="randomize($event)"></ion-toggle>
+        </ion-item>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-fab vertical="top" horizontal="end" slot="fixed">
+      <ion-fab-button style="--background: #cc0000;" (click)="presentPopover()">
+        <ion-icon name="list"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   <ion-list *ngIf="!loading" lines="none">
     <ion-item *ngFor="let word of words" >
         <ion-card style="min-width: 200px; width: auto">
@@ -49,9 +29,9 @@
           <ion-card-content>
             <ion-list>
               <h5>Sentences:</h5>
-              <ion-item *ngFor="let sentence of word.sentence">
+              <ion-item *ngFor="let sentence of word.sentences">
                   <ion-card style="width: 100%;">
-                      <ion-card-content style="word-wrap: break-word;!important">{{sentence.tag}}</ion-card-content>
+                      <ion-card-content style="word-wrap: break-word !important">{{sentence}}</ion-card-content>
                   </ion-card>
                   <br>
               </ion-item>
@@ -60,7 +40,7 @@
               <h5>Tags:</h5>
               <ion-item *ngFor="let tag of word.tags">
               <ion-card style="width: auto; height: auto">
-                  <ion-card-content>{{tag.tag}}</ion-card-content>
+                  <ion-card-content>{{tag}}</ion-card-content>
               </ion-card>
             </ion-item>
             </ion-list>
@@ -76,7 +56,7 @@
                 <h5>Synonyms:</h5>
                 <ion-item *ngFor="let synonym of word.synonyms">
                 <ion-card style="width: auto; height: auto">
-                    <ion-card-content>{{synonym.tag}}</ion-card-content>
+                    <ion-card-content>{{synonym}}</ion-card-content>
                 </ion-card>
               </ion-item>
             </ion-list>
@@ -98,5 +78,20 @@
         </ion-label>
       </ion-item>
     </ion-list>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+      <ion-infinite-scroll-content
+        loadingSpinner="bubbles"
+        loadingText="Loading more data...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 </ion-content>
+
+<style>
+  .active-toggle {
+    color: #cc0000;
+  }
+  .inactive-toggle {
+    color: grey;
+  }
+</style>
 

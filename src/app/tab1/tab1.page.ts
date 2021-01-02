@@ -3,6 +3,9 @@ import { ApiService } from '../api.service';
 import { AuthService } from '../auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import { PopoverController } from '@ionic/angular';
+import { FilterPage } from '../filter/filter.page';
+import { FiltersService } from '../filters.service';
 
 @Component({
   selector: 'app-tab1',
@@ -11,102 +14,93 @@ import { first } from 'rxjs/operators';
 })
 export class Tab1Page implements OnInit, OnChanges{
   loading = false;
+  randomFeature = true;
+  sorted = false;
   words: any[] = [];
+  allWords: any[] = [];
   skeletonArray: number[] = [1, 1, 1, 1, 1];
-  filtered = false;
-  filtersApplied = false;
-  constructor(private APIService: ApiService, public authService: AuthService) {}
-  type = new FormControl('');
-  keyword = new FormControl('');
-  public sections: any = {
-    first: 'no-filter',
-    second: 'filter',
-    sectionSelected: 'no-filter'
-  };
+  constructor(
+    private APIService: ApiService,
+    public authService: AuthService,
+    private popoverController: PopoverController,
+    private filtersService: FiltersService) {}
   ngOnInit() {
     this.getWords(null);
   }
 
+  sort() {
+    this.sorted = !this.sorted;
+  }
   ngOnChanges() {
     this.getWords(null);
   }
+
   doRefresh(event) {
     console.log('Begin async operation');
-    if (this.filtered) {
-      this.getFilteredWords(event);
-    }
-    else {
-      this.getWords(event);
-    }
+    this.getWords(event);
   }
-
-  segmentChanged(ev) {
-    if (ev.detail.value === 'filter') {
-      this.filtered = true;
-      this.filtersApplied = false;
-      this.keyword.setValue('');
-      this.type.setValue('');
-    } else {
-      this.filtered = false;
-      this.filtersApplied = false;
-    }
-    console.log(ev);
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: FilterPage,
+      cssClass: 'popover',
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
   }
-
-  clearFilter() {
-    this.filtersApplied = false;
-    this.filtered = false;
-    this.sections.sectionSelected = this.sections.first;
-    this.keyword.setValue('');
-    this.type.setValue('');
-    this.getWords(null);
-  }
-
-
-  applyFilters() {
-    if (this.keyword.value === '' && this.type.value === '') {
-      return;
-    }
-    this.getFilteredWords(null);
-  }
-
-  getFilteredWords(event) {
-    this.APIService.getWords('search', this.keyword.value, this.type.value);
+  getWords(event) {
     this.loading = true;
-    this.APIService.getWordsUpdateListener()
-    .subscribe(res => {
-      this.words = res.data;
-      let i = 0;
-      for (const word of this.words) {
-        const idx = Math.floor(Math.random() * (this.words.length - 1 - i + 1) + i);
-        const temp = this.words[i];
-        this.words[i] = this.words[idx];
-        this.words[idx] = temp;
-        i++;
+    this.filtersService.applyFilters()
+    .subscribe((res) => {
+      this.allWords = res.data;
+      if (this.randomFeature) {
+        this.words = this.shuffle(this.allWords);
       }
-      this.words = this.words.slice(0, 5);
-      this.filtersApplied = true;
+      else {
+        this.words = this.allWords.splice(0, 5);
+      }
       this.loading = false;
       if (event) {
         event.target.complete();
       }
     });
   }
-  getWords(event) {
-    this.APIService.getWords('random');
-    this.loading = true;
-    this.APIService.getWordsUpdateListener()
-    .subscribe(response => {
-    this.words = response.data;
-    console.log(response.data);
-    const arr: any[] = [];
-    for (const word of this.words) {
-    arr.push(word);
+
+  shuffle(arr: any[]) {
+    for (let i = 0; i < arr.length; ++i) {
+      const idx = Math.floor(Math.random() * (arr.length - i) + i);
+      const temp = arr[i];
+      arr[i] = arr[idx];
+      arr[idx] = temp;
     }
-    this.loading = false;
-    if (event) {
-      event.target.complete();
+    return arr.slice(0, 5);
+  }
+
+  randomize(event) {
+    this.randomFeature = event.detail.checked;
+    if (this.randomFeature) {
+      this.words = this.shuffle(this.allWords);
+    } else {
+      this.getWords(null);
     }
-    });
+  }
+
+  loadMore(event) {
+      setTimeout(() => {
+        if (!this.randomFeature) {
+          const idx = this.words.length;
+          for (let i = idx; i < idx + 5; i++) {
+            this.words.push(this.allWords[i]);
+          }
+        }
+        event.target.complete();
+
+        // App logic to determine if all data is loaded
+        // and disable the infinite scroll
+        if (this.randomFeature || this.words.length === this.allWords.length) {
+          event.target.disabled = true;
+          console.log('loaded everything');
+        }
+      }, 500);
   }
 }
