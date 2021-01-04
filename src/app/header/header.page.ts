@@ -13,6 +13,7 @@ export class HeaderPage implements OnInit {
   constructor(public authService: AuthService) { }
 
   ngOnInit() {
+    console.log('title ' + this.title);
   }
 
 }

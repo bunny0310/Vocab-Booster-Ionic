@@ -9,32 +9,32 @@
       <ion-list>
           <ion-item>
             <ion-label>Name: </ion-label>
-            <ion-input formControlName="name" [disabled]="!filtersService.name || filtersService.random" placeholder="Type a word"></ion-input>
+            <ion-input formControlName="name" [disabled]="!filtersService.name " placeholder="Type a word"></ion-input>
             <ion-toggle [checked]="filtersService.name" class="checked-toggle" (ionChange)="filtersService.setName($event)"></ion-toggle>
           </ion-item>
           <ion-item>
             <ion-label>Meaning: </ion-label>
-            <ion-input formControlName="meaning" [disabled]="!filtersService.meaning || filtersService.random" placeholder="Type the meaning"></ion-input>
+            <ion-input formControlName="meaning" [disabled]="!filtersService.meaning " placeholder="Type the meaning"></ion-input>
             <ion-toggle [checked]="filtersService.meaning" class="checked-toggle" (ionChange)="filtersService.setMeaning($event)"></ion-toggle>
           </ion-item>
             <ion-item>
               <ion-label>Sentence: </ion-label>
-              <ion-input formControlName="sentence" [disabled]="!filtersService.sentence || filtersService.random" placeholder="Type a sentence"></ion-input>
+              <ion-input formControlName="sentence" [disabled]="!filtersService.sentence " placeholder="Type a sentence"></ion-input>
               <ion-toggle [checked]="filtersService.sentence" class="checked-toggle" (ionChange)="filtersService.setSentence($event)"></ion-toggle>
             </ion-item>
               <ion-item>
                 <ion-label>Tag: </ion-label>
-                <ion-input formControlName="tag" [disabled]="!filtersService.tag || filtersService.random" placeholder="Type a tag"></ion-input>
+                <ion-input formControlName="tag" [disabled]="!filtersService.tag " placeholder="Type a tag"></ion-input>
                 <ion-toggle [checked]="filtersService.tag" class="checked-toggle" (ionChange)="filtersService.setTag($event)"></ion-toggle>
               </ion-item>
                 <ion-item>
                   <ion-label>Synonym: </ion-label>
-                  <ion-input  formControlName="synonym" [disabled]="!filtersService.synonym || filtersService.random"  placeholder="Type a synonym"></ion-input>
+                  <ion-input  formControlName="synonym" [disabled]="!filtersService.synonym "  placeholder="Type a synonym"></ion-input>
                   <ion-toggle [checked]="filtersService.synonym" class="checked-toggle" (ionChange)="filtersService.setSynonym($event)"></ion-toggle>
                 </ion-item>
                   <ion-item>
                     <ion-label>Type: </ion-label>
-                    <ion-input formControlName="type" [disabled]="!filtersService.type || filtersService.random" placeholder="What kind of word is it?"></ion-input>
+                    <ion-input formControlName="type" [disabled]="!filtersService.type " placeholder="What kind of word is it?"></ion-input>
                     <ion-toggle [checked]="filtersService.type" class="checked-toggle" (ionChange)="filtersService.setType($event)"></ion-toggle>
                   </ion-item>
                  <ion-item lines="none">

@@ -18,18 +18,54 @@ export class Tab1Page implements OnInit, OnChanges{
   sorted = false;
   words: any[] = [];
   allWords: any[] = [];
+  previousWords: any[] = [];
   skeletonArray: number[] = [1, 1, 1, 1, 1];
   constructor(
     private APIService: ApiService,
     public authService: AuthService,
     private popoverController: PopoverController,
-    private filtersService: FiltersService) {}
+    public filtersService: FiltersService) {}
   ngOnInit() {
+    this.getWords(null);
+  }
+
+  resetForm() {
+    this.filtersService.filterForm.setValue({
+      name: '',
+      meaning: '',
+      sentence: '',
+      tag: '',
+      synonym: '',
+      type: ''
+    });
+    this.sorted = false;
     this.getWords(null);
   }
 
   sort() {
     this.sorted = !this.sorted;
+    if (this.sorted) {
+      this.previousWords = this.randomFeature ? this.words.slice() : this.allWords.slice();
+      if (this.randomFeature) {
+        this.words = this.words.sort((a, b) => {
+          const d1 = new Date(a.createdAt);
+          const d2 = new Date(b.createdAt);
+          return d2.getTime() - d1.getTime();
+        });
+      }
+      else {
+        this.words = this.allWords.sort((a, b) => {
+          console.log(a.name);
+          const d1 = new Date(a.createdAt);
+          const d2 = new Date(b.createdAt);
+          return d2.getTime() - d1.getTime();
+        }).slice(0, 5);
+      }
+    }
+    else {
+      this.allWords = this.previousWords;
+      this.words = this.allWords.slice(0, 5);
+    }
   }
   ngOnChanges() {
     this.getWords(null);
@@ -37,6 +73,7 @@ export class Tab1Page implements OnInit, OnChanges{
 
   doRefresh(event) {
     console.log('Begin async operation');
+    this.sorted = false;
     this.getWords(event);
   }
   async presentPopover(ev: any) {
@@ -52,13 +89,15 @@ export class Tab1Page implements OnInit, OnChanges{
     this.loading = true;
     this.filtersService.applyFilters()
     .subscribe((res) => {
+      console.log(res.data);
       this.allWords = res.data;
       if (this.randomFeature) {
         this.words = this.shuffle(this.allWords);
       }
       else {
-        this.words = this.allWords.splice(0, 5);
+        this.words = this.allWords.slice(0, 5);
       }
+
       this.loading = false;
       if (event) {
         event.target.complete();
@@ -81,6 +120,7 @@ export class Tab1Page implements OnInit, OnChanges{
     if (this.randomFeature) {
       this.words = this.shuffle(this.allWords);
     } else {
+      this.sorted = false;
       this.getWords(null);
     }
   }
@@ -88,6 +128,7 @@ export class Tab1Page implements OnInit, OnChanges{
   loadMore(event) {
       setTimeout(() => {
         if (!this.randomFeature) {
+          console.log('abcd');
           const idx = this.words.length;
           for (let i = idx; i < idx + 5; i++) {
             this.words.push(this.allWords[i]);
@@ -98,8 +139,8 @@ export class Tab1Page implements OnInit, OnChanges{
         // App logic to determine if all data is loaded
         // and disable the infinite scroll
         if (this.randomFeature || this.words.length === this.allWords.length) {
-          event.target.disabled = true;
-          console.log('loaded everything');
+        } else {
+          event.target.disabled = false;
         }
       }, 500);
   }

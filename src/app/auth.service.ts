@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import jwtDecode from 'jwt-decode';
 import { Subject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import * as moment from 'moment';
 
 const url = 'https://vocab-booster.herokuapp.com';
 // const url = 'http://localhost:3000';
@@ -25,16 +26,7 @@ export class AuthService {
     if (!token) {
       return false;
     }
-
-    const headers = new HttpHeaders({Authorization: 'Bearer ' + token});
-    this.http.get<any>(url + '/isLoggedIn', {headers})
-    .pipe(
-      catchError(this.handleError.bind(this))
-    )
-    .subscribe(res => {
-    });
-    console.log(this.getStatus());
-    return this.getStatus();
+    return moment().isBefore(this.getExp(token));
   }
 
 
@@ -44,6 +36,10 @@ export class AuthService {
   }
   public setUserInfo(token) {
     localStorage.setItem('user-vb-responsive', token);
+  }
+  public getExp(token) {
+    const decoded: any = jwtDecode(token);
+    return moment().add(decoded.exp, 'second');
   }
 
   public logout() {

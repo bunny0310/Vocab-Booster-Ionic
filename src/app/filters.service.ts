@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { isEmpty } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FiltersService {
-  random = true;
   name = false;
   meaning = false;
   sentence = false;
@@ -26,35 +26,50 @@ export class FiltersService {
 
   constructor(private apiService: ApiService) { }
 
-  setRandom(event) {
-    this.random = event.detail.checked;
-  }
   setName(event) {
     this.name = event.detail.checked;
-    this.random = false;
+    if (this.name === false) {
+      this.filterForm.get('name').setValue('');
+    }
   }
   setMeaning(event) {
     this.meaning = event.detail.checked;
-    this.random = false;
+    if (this.meaning === false) {
+      this.filterForm.get('meaning').setValue('');
+    }
   }
   setSentence(event) {
     this.sentence = event.detail.checked;
-    this.random = false;
+    if (this.sentence === false) {
+      this.filterForm.get('sentence').setValue('');
+    }
   }
   setTag(event) {
     this.tag = event.detail.checked;
-    this.random = false;
+    if (this.tag === false) {
+      this.filterForm.get('tag').setValue('');
+    }
   }
   setSynonym(event) {
     this.synonym = event.detail.checked;
-    this.random = false;
+    if (this.synonym === false) {
+      this.filterForm.get('synonym').setValue('');
+    }
   }
   setType(event) {
     this.type = event.detail.checked;
-    this.random = false;
+    if (this.type === false) {
+      this.filterForm.get('type').setValue('');
+    }
   }
 
+  isEmpty() {
+    return ! (this.filterForm.get('name').value ||
+    this.filterForm.get('meaning').value ||
+    this.filterForm.get('sentence').value || this.filterForm.get('tag').value || this.filterForm.get('type').value || this.filterForm.get('synonym').value);
+  }
   applyFilters() {
+
     const options = {
       name: this.filterForm.get('name').value,
       meaning: this.filterForm.get('meaning').value,
@@ -63,6 +78,7 @@ export class FiltersService {
       synonym: this.filterForm.get('synonym').value,
       sentence: this.filterForm.get('sentence').value,
     };
+    console.log(options);
     this.apiService.getWords({mode: 'search', options});
     return this.apiService.getWordsUpdateListener();
   }

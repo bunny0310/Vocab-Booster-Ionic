@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package io.vocabbooster;
 
 import android.os.Bundle;
 
