@@ -2,19 +2,32 @@
 <ion-toolbar>
     <ion-item>
       <form [formGroup]="dashboardForm" style="width: 100%">
-        <ion-select placeholder="Choose an option" formControlName="options" style="width: 100%">
+        <ion-select placeholder="Choose an option" formControlName="options" style="width: 100%" (ionChange)="onChange($event)">
             <ion-select-option value="wordcloud" >Word Cloud</ion-select-option>
+            <ion-select-option value="acc-information" >My Account Information</ion-select-option>
         </ion-select>
       </form>
     </ion-item>
 </ion-toolbar>
 <ion-content [fullscreen]="true">
-    <div id="container">
         <ion-spinner name="crescent" *ngIf="loading" style="z-index: 99000"></ion-spinner>
         <ion-card *ngIf="dashboardForm.get('options').value === 'wordcloud' && !loading">
             <ion-card-content>
               <img [src]="sfurl">
             </ion-card-content>
           </ion-card>
-    </div>
+          <ion-card *ngIf="dashboardForm.get('options').value === 'acc-information' && !loading">
+              <ion-item>
+                  <ion-label color="dark">Number of words added: </ion-label>
+                  <ion-text>{{this.noWords}}</ion-text>
+              </ion-item>
+              <ion-item>
+                  <ion-label color="dark">Number of unique tags used: </ion-label>
+                  <ion-text>{{this.noTags}}</ion-text>
+              </ion-item>
+              <ion-card-content>
+                <img [src]="pcsf2">
+                <img [src]="pcsf1">
+              </ion-card-content>
+            </ion-card>
 </ion-content>
