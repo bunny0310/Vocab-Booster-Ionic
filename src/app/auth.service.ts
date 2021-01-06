@@ -8,12 +8,14 @@ import * as moment from 'moment';
 import { LoadingController } from '@ionic/angular';
 
 const url = 'https://vocab-booster.herokuapp.com';
+
 // const url = 'http://localhost:3000';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   status = true;
+  loggingOut = false;
   constructor(private router: Router, private http: HttpClient, private loadingController: LoadingController) { }
   public getStatus() {
     return this.status;
@@ -24,7 +26,12 @@ export class AuthService {
       message: msg,
       spinner: 'bubbles'
     });
-    await loading.present();
+    await loading.present().then(() => {
+      console.log('presented');
+      if (!this.loggingOut) {
+        loading.dismiss().then(() => console.log('abort presenting'));
+      }
+    });
 
     const { role, data } = await loading.onDidDismiss();
     console.log('Loading dismissed!');
@@ -55,8 +62,10 @@ export class AuthService {
   }
 
   public logout() {
+    this.loggingOut = true;
     this.presentLoading('Logging you out!');
     localStorage.removeItem('user-vb-responsive');
+    this.loggingOut = false;
     this.loadingController.dismiss();
     this.router.navigate(['/login']);
   }

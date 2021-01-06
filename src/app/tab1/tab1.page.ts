@@ -3,7 +3,7 @@ import { ApiService } from '../api.service';
 import { AuthService } from '../auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { PopoverController, IonContent} from '@ionic/angular';
+import { PopoverController, IonContent, LoadingController} from '@ionic/angular';
 import { FilterPage } from '../filter/filter.page';
 import { FiltersService } from '../filters.service';
 import { Subject, Observable } from 'rxjs';
@@ -18,6 +18,8 @@ export class Tab1Page implements OnInit, OnChanges{
   loading = false;
   randomFeature = true;
   sorted = false;
+  sorting = false;
+  randomizing = false;
   words: any[] = [];
   allWords: any[] = [];
   previousWords: any[] = [];
@@ -28,7 +30,8 @@ export class Tab1Page implements OnInit, OnChanges{
     public authService: AuthService,
     private popoverController: PopoverController,
     public filtersService: FiltersService,
-    private events: EventsService
+    private events: EventsService,
+    private loadingController: LoadingController
     ) {}
   ngOnInit() {
     this.getWords(null);
@@ -44,6 +47,21 @@ export class Tab1Page implements OnInit, OnChanges{
   }
   ionViewDidLeave() {
   }
+  async presentLoading(msg) {
+    const loading = await this.loadingController.create({
+      message: msg,
+      spinner: 'bubbles'
+    });
+    await loading.present().then(() => {
+      console.log('presented');
+      if (!this.sorting && !this.randomizing) {
+        loading.dismiss().then(() => console.log('abort presenting'));
+      }
+    });
+
+    const { role, data } = await loading.onDidDismiss();
+    console.log('Loading dismissed!');
+  }
   resetForm() {
     this.filtersService.filterForm.setValue({
       name: '',
@@ -58,6 +76,8 @@ export class Tab1Page implements OnInit, OnChanges{
   }
 
   sort() {
+    this.sorting = true;
+    this.presentLoading('Sorting');
     this.sorted = !this.sorted;
     if (this.sorted) {
       this.previousWords = this.randomFeature ? this.words.slice() : this.allWords.slice();
@@ -81,6 +101,8 @@ export class Tab1Page implements OnInit, OnChanges{
       this.allWords = this.previousWords;
       this.words = this.allWords.slice(0, 5);
     }
+    this.sorting = false;
+    this.loadingController.dismiss();
   }
   ngOnChanges() {
     this.getWords(null);
@@ -145,21 +167,24 @@ export class Tab1Page implements OnInit, OnChanges{
   }
 
   randomize(event) {
+
     this.randomFeature = event.detail.checked;
+    this.randomizing = true;
+    this.presentLoading('Shuffling');
     if (this.randomFeature) {
       this.words = this.shuffle(this.allWords);
     } else {
       this.sorted = false;
-      this.getWords(null);
+      this.words = this.allWords.slice(0, 5);
     }
+    this.randomizing = false;
   }
 
   loadMore(event) {
       setTimeout(() => {
         if (!this.randomFeature) {
-          console.log('abcd');
           const idx = this.words.length;
-          for (let i = idx; i < idx + 5; i++) {
+          for (let i = idx; i < this.allWords.length && i < idx + 5; i++) {
             this.words.push(this.allWords[i]);
           }
         }

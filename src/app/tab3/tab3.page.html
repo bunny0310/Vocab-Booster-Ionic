@@ -10,7 +10,10 @@
     </ion-item>
 </ion-toolbar>
 <ion-content [fullscreen]="true">
-        <ion-spinner name="crescent" *ngIf="loading" style="z-index: 99000"></ion-spinner>
+
+        <div id="container">
+            <ion-spinner name="crescent" *ngIf="loading" style="z-index: 99000"></ion-spinner>
+        </div>
         <ion-card *ngIf="dashboardForm.get('options').value === 'wordcloud' && !loading">
             <ion-card-content>
               <img [src]="sfurl">
