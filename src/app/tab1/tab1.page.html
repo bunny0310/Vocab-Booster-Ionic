@@ -9,7 +9,7 @@
         </ion-item>
       </ion-buttons>
       <ion-buttons slot="start">
-        <ion-item *ngIf="!filtersService.isEmpty()">
+        <ion-item *ngIf="filtered">
           <ion-chip style="--background: #cc0000; color: white">
             Filters applied
             <ion-icon style="color: white" name="close" (click)="resetForm()"></ion-icon>

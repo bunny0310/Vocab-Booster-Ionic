@@ -24,6 +24,7 @@ export class Tab1Page implements OnInit, OnChanges{
   allWords: any[] = [];
   previousWords: any[] = [];
   skeletonArray: number[] = [1, 1, 1, 1, 1];
+  filtered = false;
   @ViewChild(IonContent, { static: false }) private content: IonContent;
   constructor(
     private APIService: ApiService,
@@ -44,9 +45,14 @@ export class Tab1Page implements OnInit, OnChanges{
         this.content.scrollToTop(1000);
       }
     });
+
+    this.events.sendWordsDataAsObservable()
+    .subscribe((res) => {
+      this.allWords = res.msg;
+      this.filtered = res.filtersApplied;
+    });
   }
-  ionViewDidLeave() {
-  }
+
   async presentLoading(msg) {
     const loading = await this.loadingController.create({
       message: msg,
@@ -63,19 +69,15 @@ export class Tab1Page implements OnInit, OnChanges{
     console.log('Loading dismissed!');
   }
   resetForm() {
-    this.filtersService.filterForm.setValue({
-      name: '',
-      meaning: '',
-      sentence: '',
-      tag: '',
-      synonym: '',
-      type: ''
-    });
+    this.filtersService.resetFilters();
     this.sorted = false;
-    this.getWords(null);
+    this.filtered = false;
+    this.events.sendWordsData([], false);
+    //this.getWords(null);
   }
 
   sort() {
+    this.events.selectTab('tab1');
     this.sorting = true;
     this.presentLoading('Sorting');
     this.sorted = !this.sorted;
@@ -124,37 +126,22 @@ export class Tab1Page implements OnInit, OnChanges{
   }
   getWords(event) {
     this.loading = true;
-    if (this.filtersService.isEmpty) {
-      this.APIService.getWords({mode: null});
-      this.APIService.getWordsUpdateListener()
-      .subscribe((res) => {
-        this.allWords = res.data;
-        if (this.randomFeature) {
-          this.words = this.shuffle(this.allWords);
-        }
-        else {
-          this.words = this.allWords.slice(0, 5);
-        }
-      });
-    }
-    else {
-      this.filtersService.applyFilters()
-      .subscribe((res) => {
-        console.log(res.data);
-        this.allWords = res.data;
-        if (this.randomFeature) {
-          this.words = this.shuffle(this.allWords);
-        }
-        else {
-          this.words = this.allWords.slice(0, 5);
-        }
-      });
-    }
+    this.APIService.getWords({mode: null});
+    this.APIService.getWordsUpdateListener()
+    .subscribe((res) => {
+      this.allWords = res.data;
+      if (this.randomFeature) {
+        this.words = this.shuffle(this.allWords);
+      }
+      else {
+        this.words = this.allWords.slice(0, 5);
+      }
+    });
     this.loading = false;
     if (event) {
       event.target.complete();
     }
-  }
+    }
 
   shuffle(arr: any[]) {
     for (let i = 0; i < arr.length; ++i) {
@@ -167,7 +154,7 @@ export class Tab1Page implements OnInit, OnChanges{
   }
 
   randomize(event) {
-
+    this.events.selectTab('tab1');
     this.randomFeature = event.detail.checked;
     this.randomizing = true;
     this.presentLoading('Shuffling');
