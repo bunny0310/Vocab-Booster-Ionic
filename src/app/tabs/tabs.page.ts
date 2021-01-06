@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
+import { EventsService } from '../events.service';
 
 @Component({
   selector: 'app-tabs',
@@ -9,7 +10,11 @@ import { ToastController } from '@ionic/angular';
 })
 export class TabsPage implements OnInit{
 
-  constructor(private authService: AuthService, private toastController: ToastController) {
+  constructor(
+    private authService: AuthService,
+    private toastController: ToastController,
+    private loadingController: LoadingController,
+    private events: EventsService) {
   }
 
   ngOnInit() {
@@ -21,6 +26,12 @@ export class TabsPage implements OnInit{
     console.log(this.isLoggedIn());
     this.authService.getUsername(localStorage.getItem('user-vb-responsive'));
   }
+
+  tabButtonClicked(tabNumber: string) {
+    if (tabNumber === 'tab1') {
+        this.events.selectTab(tabNumber);
+    }
+}
 
   ionViewWillEnter() {
     if (!this.isLoggedIn()) {

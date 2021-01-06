@@ -5,6 +5,7 @@ import jwtDecode from 'jwt-decode';
 import { Subject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import * as moment from 'moment';
+import { LoadingController } from '@ionic/angular';
 
 const url = 'https://vocab-booster.herokuapp.com';
 // const url = 'http://localhost:3000';
@@ -13,9 +14,20 @@ const url = 'https://vocab-booster.herokuapp.com';
 })
 export class AuthService {
   status = true;
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private loadingController: LoadingController) { }
   public getStatus() {
     return this.status;
+  }
+
+  async presentLoading(msg) {
+    const loading = await this.loadingController.create({
+      message: msg,
+      spinner: 'bubbles'
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+    console.log('Loading dismissed!');
   }
 
   public setStatus(status) {
@@ -43,7 +55,9 @@ export class AuthService {
   }
 
   public logout() {
+    this.presentLoading('Logging you out!');
     localStorage.removeItem('user-vb-responsive');
+    this.loadingController.dismiss();
     this.router.navigate(['/login']);
   }
 

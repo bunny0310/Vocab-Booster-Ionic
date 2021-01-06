@@ -1,11 +1,13 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild } from '@angular/core';
 import { ApiService } from '../api.service';
 import { AuthService } from '../auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, IonContent} from '@ionic/angular';
 import { FilterPage } from '../filter/filter.page';
 import { FiltersService } from '../filters.service';
+import { Subject, Observable } from 'rxjs';
+import { EventsService } from '../events.service';
 
 @Component({
   selector: 'app-tab1',
@@ -20,15 +22,28 @@ export class Tab1Page implements OnInit, OnChanges{
   allWords: any[] = [];
   previousWords: any[] = [];
   skeletonArray: number[] = [1, 1, 1, 1, 1];
+  @ViewChild(IonContent, { static: false }) private content: IonContent;
   constructor(
     private APIService: ApiService,
     public authService: AuthService,
     private popoverController: PopoverController,
-    public filtersService: FiltersService) {}
+    public filtersService: FiltersService,
+    private events: EventsService
+    ) {}
   ngOnInit() {
     this.getWords(null);
   }
-
+  ionViewWillEnter() {
+    this.events.selectTabAsObservable()
+    .subscribe((res) => {
+      if (res.msg === 'tab1') {
+        console.log('scrolling');
+        this.content.scrollToTop(1000);
+      }
+    });
+  }
+  ionViewDidLeave() {
+  }
   resetForm() {
     this.filtersService.filterForm.setValue({
       name: '',
@@ -87,22 +102,36 @@ export class Tab1Page implements OnInit, OnChanges{
   }
   getWords(event) {
     this.loading = true;
-    this.filtersService.applyFilters()
-    .subscribe((res) => {
-      console.log(res.data);
-      this.allWords = res.data;
-      if (this.randomFeature) {
-        this.words = this.shuffle(this.allWords);
-      }
-      else {
-        this.words = this.allWords.slice(0, 5);
-      }
-
-      this.loading = false;
-      if (event) {
-        event.target.complete();
-      }
-    });
+    if (this.filtersService.isEmpty) {
+      this.APIService.getWords({mode: null});
+      this.APIService.getWordsUpdateListener()
+      .subscribe((res) => {
+        this.allWords = res.data;
+        if (this.randomFeature) {
+          this.words = this.shuffle(this.allWords);
+        }
+        else {
+          this.words = this.allWords.slice(0, 5);
+        }
+      });
+    }
+    else {
+      this.filtersService.applyFilters()
+      .subscribe((res) => {
+        console.log(res.data);
+        this.allWords = res.data;
+        if (this.randomFeature) {
+          this.words = this.shuffle(this.allWords);
+        }
+        else {
+          this.words = this.allWords.slice(0, 5);
+        }
+      });
+    }
+    this.loading = false;
+    if (event) {
+      event.target.complete();
+    }
   }
 
   shuffle(arr: any[]) {
