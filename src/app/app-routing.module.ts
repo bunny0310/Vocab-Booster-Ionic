@@ -27,6 +27,10 @@ const routes: Routes = [
   {
     path: 'filter',
     loadChildren: () => import('./filter/filter.module').then( m => m.FilterPageModule)
+  },
+  {
+    path: 'login-tabs',
+    loadChildren: () => import('./login-tabs/login-tabs.module').then( m => m.LoginTabsPageModule)
   }
 ];
 @NgModule({

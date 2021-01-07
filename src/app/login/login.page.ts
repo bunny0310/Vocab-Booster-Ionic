@@ -65,33 +65,6 @@ export class LoginPage implements OnInit {
         window.location.reload();
       });
     });
-
-
-
-    // const headers = new Headers();
-    // headers.append('Content-Type', 'application/json');
-    // const options = {headers};
-    // this.http.post(url + '/api/login', formData, options)
-    // .then((res) => {
-    //   console.log('running on a simulator');
-    //   const user: any = res;
-    //   localStorage.setItem('user-vb-responsive', user.username);
-    //   console.log(res);
-    //   this.router.navigate(['/']);
-    // }).catch((err) => {
-    //   console.log(err);
-    // });
-
-  //   Http.request({
-  //     method: 'post',
-  //     url: url + '/api/login',
-  //     data: formData,
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     }
-  //   }).then((data) => {
-  //     console.log(data)
-  //   })
    }
    async presentToast(msg) {
     const toast = await this.toastController.create({

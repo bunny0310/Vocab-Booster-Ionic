@@ -49,6 +49,7 @@ export class Tab1Page implements OnInit, OnChanges{
     this.events.sendWordsDataAsObservable()
     .subscribe((res) => {
       this.allWords = res.msg;
+      console.log(res.filtersApplied);
       this.filtered = res.filtersApplied;
     });
   }
@@ -73,7 +74,7 @@ export class Tab1Page implements OnInit, OnChanges{
     this.sorted = false;
     this.filtered = false;
     this.events.sendWordsData([], false);
-    //this.getWords(null);
+    this.getWords(null);
   }
 
   sort() {
@@ -113,7 +114,21 @@ export class Tab1Page implements OnInit, OnChanges{
   doRefresh(event) {
     console.log('Begin async operation');
     this.sorted = false;
-    this.getWords(event);
+    this.loading = true;
+    if (this.filtered) {
+      this.APIService.getWords({mode: 'search', options: this.filtersService.savedData});
+      this.APIService.getWordsUpdateListener()
+      .subscribe((res) => {
+        this.events.sendWordsData(res.data, true);
+        this.loading = false;
+      });
+    } else {
+      this.getWords(event);
+      this.loading = false;
+    }
+    if (event !== null) {
+      event.target.complete();
+    }
   }
   async presentPopover(ev: any) {
     const popover = await this.popoverController.create({
@@ -130,6 +145,7 @@ export class Tab1Page implements OnInit, OnChanges{
     this.APIService.getWordsUpdateListener()
     .subscribe((res) => {
       this.allWords = res.data;
+      this.filtered = false;
       if (this.randomFeature) {
         this.words = this.shuffle(this.allWords);
       }
@@ -141,7 +157,7 @@ export class Tab1Page implements OnInit, OnChanges{
     if (event) {
       event.target.complete();
     }
-    }
+  }
 
   shuffle(arr: any[]) {
     for (let i = 0; i < arr.length; ++i) {

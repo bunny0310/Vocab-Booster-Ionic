@@ -1,9 +1,67 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>register</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
-</ion-content>
+    <ion-toolbar style="--background: #cc0000; --color:#f2f2f2">
+        <ion-thumbnail slot="start">
+            <ion-img src="assets/favicon.png"></ion-img>
+        </ion-thumbnail>
+      <ion-title>Vocab Booster</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+  
+    <div id="container">
+      <ion-card *ngIf="!loading"> 
+        <ion-card-header>
+          <ion-card-title>Register</ion-card-title>
+        </ion-card-header>
+      
+        <ion-card-content>
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+              <ion-item lines="full">
+                  <ion-icon name="person"></ion-icon>
+                  <ion-input
+                    placeholder="First Name"
+                    type="text"
+                    formControlName="firstName">
+                  </ion-input>
+                </ion-item>
+                  <ion-item lines="full">
+                      <ion-icon name="person"></ion-icon>
+                      <ion-input
+                        placeholder="Last Name"
+                        type="text"
+                        formControlName="lastName">
+                      </ion-input>
+                    </ion-item>
+                      <ion-item lines="full">
+                          <ion-icon name="mail"></ion-icon>
+                          <ion-input
+                            placeholder="Email"
+                            type="email"
+                            formControlName="email">
+                          </ion-input>
+                        </ion-item>
+            <ion-item lines="full">
+              <ion-icon name="person"></ion-icon>
+              <ion-input
+                placeholder="Username"
+                type="text"
+                formControlName="username"
+              ></ion-input>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              <ion-input
+                placeholder="Password"
+                type="password"
+                formControlName="password">
+              </ion-input>
+            </ion-item>
+            <ion-button expand="full" type="submit" [disabled]="!registerForm.valid" style="--background-color: #cc0000 !important">REGISTER</ion-button>
+          </form>
+        </ion-card-content>
+      </ion-card> 
+      
+    </div>
+  
+  </ion-content>

@@ -67,7 +67,7 @@ export class AuthService {
     localStorage.removeItem('user-vb-responsive');
     this.loggingOut = false;
     this.loadingController.dismiss();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login-tabs']);
   }
 
   private handleError(error: HttpErrorResponse) {
