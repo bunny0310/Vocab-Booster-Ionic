@@ -6,6 +6,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastController, LoadingController } from '@ionic/angular';
 
+const url = 'https://vocab-booster.herokuapp.com';
+// const url = 'http://localhost:3000';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -41,7 +44,7 @@ export class RegisterPage implements OnInit {
     this.loading = true;
     const formData = this.registerForm.value;
     // this.presentLoading('Logging you in!');
-    this.httpClient.post('http://localhost:3000' + '/api/register', formData, {observe: 'response', withCredentials: true})
+    this.httpClient.post(url + '/api/register', formData, {observe: 'response', withCredentials: true})
     .pipe(
       catchError(this.handleError.bind(this))
     )
