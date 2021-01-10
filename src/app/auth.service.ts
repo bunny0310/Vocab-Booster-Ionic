@@ -22,6 +22,7 @@ export class AuthService {
   }
 
   async presentLoading(msg) {
+
     const loading = await this.loadingController.create({
       message: msg,
       spinner: 'bubbles'

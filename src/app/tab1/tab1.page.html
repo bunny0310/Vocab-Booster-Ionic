@@ -1,5 +1,5 @@
   <app-header title="Your words"></app-header>
-  <ion-toolbar>
+  <ion-toolbar style="width: 100%">
       <ion-buttons slot="start">
         <ion-item>
             <ion-button tooltip="Sort words" style="--background: #cc0000;" [ngStyle]="{'color': sorted ? 'green' : 'white'}" (click)="sort()"><ion-icon name="funnel"></ion-icon></ion-button>
@@ -16,7 +16,19 @@
           </ion-chip>
         </ion-item>
       </ion-buttons>
-    </ion-toolbar>
+  </ion-toolbar>
+<ion-toolbar>
+    <ion-card>
+      <ion-card-subtitle>
+        Alphabetic sort
+      </ion-card-subtitle>
+        <ion-card-content>
+            <div>
+                <ion-badge [ngStyle]="{'background-color': aStyles[letter.charCodeAt(0) - 97]}" style="height: 30px; width: 30px; padding: 20px; border-radius: 20px" *ngFor="let letter of alphabets" (click)="filterByLetter(letter)">{{letter}}</ion-badge>
+            </div>
+        </ion-card-content>
+      </ion-card>
+</ion-toolbar>
 <ion-content [fullscreen]="true" [scrollEvents]="true">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>

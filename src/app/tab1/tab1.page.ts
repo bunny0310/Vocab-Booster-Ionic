@@ -24,7 +24,12 @@ export class Tab1Page implements OnInit, OnChanges{
   allWords: any[] = [];
   previousWords: any[] = [];
   skeletonArray: number[] = [1, 1, 1, 1, 1];
+  alphabets: string[] = 'abcdefghijklmnopqrstuvwzyz'.split('');
+  aStyles: string[] = this.alphabets.slice();
+  selectedAButtons: boolean[] = [];
+  selectedAlphabet = new Set();
   filtered = false;
+
   @ViewChild(IonContent, { static: false }) private content: IonContent;
   constructor(
     private APIService: ApiService,
@@ -36,6 +41,10 @@ export class Tab1Page implements OnInit, OnChanges{
     ) {}
   ngOnInit() {
     this.getWords(null);
+    this.aStyles.fill('#cc0000', 0, this.aStyles.length);
+    for (let i = 0; i < this.aStyles.length; ++i) {
+      this.selectedAButtons[i] = false;
+    }
   }
   ionViewWillEnter() {
     this.events.selectTabAsObservable()
@@ -200,5 +209,42 @@ export class Tab1Page implements OnInit, OnChanges{
           event.target.disabled = false;
         }
       }, 500);
+  }
+
+  filterByLetter(letter) {
+    if (this.previousWords.length !== 0) {
+      this.allWords = this.previousWords.slice();
+    }
+
+    this.selectedAlphabet.clear();
+    this.events.selectTab('tab1');
+    const idx = letter.charCodeAt(0) - 97;
+
+    if (this.selectedAButtons[idx] === false) {
+      this.selectedAlphabet.add(letter);
+    }
+
+    this.aStyles.fill('#cc0000', 0, this.aStyles.length);
+    this.selectedAButtons[idx] = !this.selectedAButtons[idx];
+    this.aStyles[idx] = this.selectedAButtons[idx] ? 'black' : '#cc0000';
+    for (let i = 0; i < this.selectedAButtons.length; ++i) {
+      if (i !== letter.charCodeAt(0) - 97) {
+        this.selectedAButtons[i] = false;
+      }
+    }
+
+    if (this.selectedAButtons[idx]) {
+      console.log(this.allWords);
+      this.previousWords = this.allWords.slice();
+      this.allWords = this.allWords.filter((word: any) => {
+        return word.name.toLowerCase()[0] === letter;
+      });
+      this.words = this.allWords.slice(0, 5);
+    }
+    else {
+      this.allWords = this.previousWords;
+      this.words = this.allWords.slice(0, 5);
+    }
+
   }
 }
