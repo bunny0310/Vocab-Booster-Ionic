@@ -5,8 +5,8 @@ import jwtDecode from 'jwt-decode';
 import { Subject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-const url = 'https://vocab-booster.herokuapp.com';
-// const url = 'http://localhost:3000';
+// const url = 'https://vocab-booster.herokuapp.com';
+const url = 'http://localhost:3000';
 @Injectable({
   providedIn: 'root'
 })
@@ -26,15 +26,16 @@ export class AuthService {
       return false;
     }
 
-    const headers = new HttpHeaders({Authorization: 'Bearer ' + token});
-    this.http.get<any>(url + '/isLoggedIn', {headers})
-    .pipe(
-      catchError(this.handleError.bind(this))
-    )
-    .subscribe(res => {
-    });
-    console.log(this.getStatus());
-    return this.getStatus();
+    // const headers = new HttpHeaders({Authorization: 'Bearer ' + token});
+    // this.http.get<any>(url + '/isLoggedIn', {headers})
+    // .pipe(
+    //   catchError(this.handleError.bind(this))
+    // )
+    // .subscribe(res => {
+    // });
+    // console.log(this.getStatus());
+    // return this.getStatus();
+    return true;
   }
 
 

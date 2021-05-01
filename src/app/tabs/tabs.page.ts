@@ -14,11 +14,9 @@ export class TabsPage implements OnInit{
 
   ngOnInit() {
     if (!this.isLoggedIn()) {
-      console.log(this.isLoggedIn());
       this.presentToast('You have been logged out!');
       this.authService.logout();
     }
-    console.log(this.isLoggedIn());
     this.authService.getUsername(localStorage.getItem('user-vb-responsive'));
   }
 
