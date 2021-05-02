@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { Subject } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 // const url = 'https://vocab-booster.herokuapp.com';
 const url = 'http://localhost:3000';
@@ -12,32 +14,29 @@ const url = 'http://localhost:3000';
 
 export class ApiService {
 
-  words: [] = [];
-  wordsUpdated = new Subject<{data: []}>();
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private router: Router) { }
 
-  public getWords({mode, keyword = null, type = null, options = null}) {
-    let endpoint = '/api/words';
-    if (mode === 'random') {
-      endpoint = '/api/random-words';
-    } else if (mode === 'search') {
-      endpoint = '/api/search';
+  public getWords({mode, filter, offset}) {
+    if (filter == null) {
+      filter = {
+      };
     }
-    const username = this.authService.isAuthenticated() ? this.authService.getUsername(localStorage.getItem('user-vb-responsive') ) : '';
-    if (username !== '') {
-      const headers = new HttpHeaders({Authorization: localStorage.getItem('user-vb-responsive')});
-      this.http.post<[]>(url + endpoint, {username, options}, {withCredentials: true, headers})
-      .subscribe((res: any) => {
-        this.words = res.data;
-        this.wordsUpdated.next({data: res.data});
-      });
-    }
+    const endpoint = `/api/words?mode=${mode}&filterName=${filter.name == null ? '' : filter.name}&filterMeaning=${filter.meaning == null ? '' : filter.meaning}&filterSentence=${filter.sentence == null ? '' : filter.sentence}&filterType=${filter.type == null ? '' : filter.type}&filterTag=${filter.tag == null ? '' : filter.tag}&filterSynonym=${filter.synonym == null ? '' : filter.synonym}&offset=${offset}`;
+    const headers = new HttpHeaders({Authorization: localStorage.getItem('user-vb-responsive')});
+    return this.http.
+    get<any>(url + endpoint, {withCredentials: true, headers})
+    .pipe(
+      catchError(error => {
+          if (error.status === 401) {
+            localStorage.removeItem('user-vb-responsive');
+            this.router.navigate(['/login']);
+          }
+          return throwError(`${JSON.stringify(error)}`);
+      }));
   }
-
-  public getWordsUpdateListener() {
-    return this.wordsUpdated.asObservable();
-  }
-
   public getTags(keyword) {
     const headers = new HttpHeaders({Authorization: localStorage.getItem('user-vb-responsive')});
     return this.http.get<any>(`${url}/api/tags?keyword=${keyword}`, {withCredentials: true, headers});
@@ -45,5 +44,9 @@ export class ApiService {
   public getWordUniquenessStatus(name) {
     const headers = new HttpHeaders({Authorization: localStorage.getItem('user-vb-responsive')});
     return this.http.get<any>(`${url}/api/uniqueName?name=${name}`, {withCredentials: true, headers});
+  }
+  public getWord(id: string) {
+    const headers = new HttpHeaders({Authorization: localStorage.getItem('user-vb-responsive')});
+    return this.http.get<any>(`${url}/api/words/${id}`, {withCredentials: true, headers});
   }
 }

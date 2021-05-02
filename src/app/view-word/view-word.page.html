@@ -1,0 +1,59 @@
+
+<app-header *ngIf="word" [title]="('View Word: ' + word.name|uppercase)"></app-header>
+<ion-content [fullscreen]="true">
+  <ion-card id="loadingCard" *ngIf="loading" style="min-width: 200px; width: auto; margin-top: 50px;">
+      <ion-card-header>
+          <ion-card-title>
+              <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-card-title>
+          <ion-card-subtitle>
+              <ion-skeleton-text animated ></ion-skeleton-text>
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+              <ion-skeleton-text animated ></ion-skeleton-text>
+              <ion-skeleton-text animated ></ion-skeleton-text>
+              <ion-skeleton-text animated ></ion-skeleton-text>
+              <ion-skeleton-text animated ></ion-skeleton-text>
+          </ion-list>
+        </ion-card-content>
+  </ion-card>
+  <ion-card id="actualCard" *ngIf="!loading" style="min-width: 200px; width: auto; margin-top: 50px;">
+      <ion-card-header>
+        <ion-card-title>
+            <ion-button color="light" (click)="navigate(word._id)">
+              {{word?.name}}
+            </ion-button>
+        </ion-card-title>
+        <ion-card-subtitle>{{word?.meaning}}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <h5>Sentences:</h5>
+          <ion-item *ngFor="let sentence of word?.sentences">
+              <ion-card style="width: 100%;">
+                  <ion-card-content style="word-wrap: break-word !important">{{sentence}}</ion-card-content>
+              </ion-card>
+              <br>
+          </ion-item>
+        </ion-list>
+        <ion-list>
+          <h5>Tags:</h5>
+          <ion-item *ngFor="let tag of word?.tags">
+          <ion-card style="width: auto; height: auto">
+              <ion-card-content>{{tag}}</ion-card-content>
+          </ion-card>
+        </ion-item>
+        </ion-list>
+        <ion-list>
+          <h5>Types:</h5>
+          <ion-item *ngFor="let type of word?.types">
+            <ion-card style="width: auto; height: auto">
+                <ion-card-content>{{type}}</ion-card-content>
+            </ion-card>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+  </ion-card>
+</ion-content>

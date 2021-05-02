@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { ToastController } from '@ionic/angular';
+import { ToastController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tabs',
@@ -9,7 +9,10 @@ import { ToastController } from '@ionic/angular';
 })
 export class TabsPage implements OnInit{
 
-  constructor(private authService: AuthService, private toastController: ToastController) {
+  constructor(
+        private authService: AuthService,
+        private toastController: ToastController,
+        private navController: NavController) {
   }
 
   ngOnInit() {
@@ -17,7 +20,6 @@ export class TabsPage implements OnInit{
       this.presentToast('You have been logged out!');
       this.authService.logout();
     }
-    this.authService.getUsername(localStorage.getItem('user-vb-responsive'));
   }
 
   ionViewWillEnter() {
@@ -25,7 +27,6 @@ export class TabsPage implements OnInit{
       this.presentToast('You have been logged out!');
       this.authService.logout();
     }
-    this.authService.getUsername(localStorage.getItem('user-vb-responsive'));
   }
 
   async presentToast(msg) {

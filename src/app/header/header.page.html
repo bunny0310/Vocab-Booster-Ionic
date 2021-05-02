@@ -3,11 +3,19 @@
       <ion-thumbnail slot="start">
           <ion-img src="assets/favicon.png"></ion-img>
       </ion-thumbnail>
+      <ion-buttons slot='start'>
+          <ion-back-button *ngIf="router.url !== '/tabs/tab1'" style="display: block !important" (click)="goBack()"></ion-back-button>
+      </ion-buttons>
     <ion-title>{{title}}</ion-title>
-    <ion-buttons slot="end">
-        <ion-button color="light" large (click)="authService.logout()">
-            LOGOUT
-          </ion-button>
-    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+        <ion-buttons slot="end">
+                <ion-text>
+                    Welcome {{user?.name}}
+                </ion-text>
+                <ion-button color="danger" large (click)="authService.logout()">
+                    LOGOUT
+                </ion-button>
+            </ion-buttons>
   </ion-toolbar>
 </ion-header>

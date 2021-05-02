@@ -1,11 +1,10 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { ApiService } from '../api.service';
 import { AuthService } from '../auth.service';
-import { FormGroup, FormControl } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, ModalController } from '@ionic/angular';
 import { FilterPage } from '../filter/filter.page';
-import { FiltersService } from '../filters.service';
+import { Router } from '@angular/router';
+import { FilterModalPage } from '../filter-modal/filter-modal.page';
 
 @Component({
   selector: 'app-tab1',
@@ -14,7 +13,7 @@ import { FiltersService } from '../filters.service';
 })
 export class Tab1Page implements OnInit, OnChanges{
   loading = false;
-  randomFeature = true;
+  randomFeature = true; // boolean for random toggle
   sorted = false;
   words: any[] = [];
   allWords: any[] = [];
@@ -23,65 +22,35 @@ export class Tab1Page implements OnInit, OnChanges{
     private APIService: ApiService,
     public authService: AuthService,
     private popoverController: PopoverController,
-    private filtersService: FiltersService) {}
+    private router: Router,
+    private modalController: ModalController) {}
   ngOnInit() {
-    this.getWords(null);
+    this.getWords(null, this.randomFeature ? 'r' : '');
   }
 
   sort() {
     this.sorted = !this.sorted;
+  }
+
+  navigate(id) {
+    this.router.navigate([`/view-word`], {queryParams: {id}});
   }
   ngOnChanges() {
     this.getWords(null);
   }
 
   doRefresh(event) {
-    console.log('Begin async operation');
-    this.getWords(event);
+    this.getWords(event, this.randomFeature ? 'r' : '');
   }
-  async presentPopover(ev: any) {
-    const popover = await this.popoverController.create({
-      component: FilterPage,
-      cssClass: 'popover',
-      event: ev,
-      translucent: true
-    });
-    return await popover.present();
-  }
-  getWords(event) {
+  getWords(event, mode = '', filter = {}) {
     this.loading = true;
-    this.filtersService.applyFilters()
-    .subscribe((res) => {
-      this.allWords = res.data;
-      if (this.randomFeature) {
-        this.words = this.shuffle(this.allWords);
-      }
-      else {
-        this.words = this.allWords.splice(0, 5);
-      }
-      this.loading = false;
-      if (event) {
-        event.target.complete();
-      }
+    this.APIService.getWords({mode, filter: {tag: 'Pakman'}, offset: 0})
+    .subscribe((data) => {
+      this.words = data.data;
     });
-  }
-
-  shuffle(arr: any[]) {
-    for (let i = 0; i < arr.length; ++i) {
-      const idx = Math.floor(Math.random() * (arr.length - i) + i);
-      const temp = arr[i];
-      arr[i] = arr[idx];
-      arr[idx] = temp;
-    }
-    return arr.slice(0, 5);
-  }
-
-  randomize(event) {
-    this.randomFeature = event.detail.checked;
-    if (this.randomFeature) {
-      this.words = this.shuffle(this.allWords);
-    } else {
-      this.getWords(null);
+    this.loading = false;
+    if (event) {
+      event.target.complete();
     }
   }
 
@@ -89,18 +58,36 @@ export class Tab1Page implements OnInit, OnChanges{
       setTimeout(() => {
         if (!this.randomFeature) {
           const idx = this.words.length;
-          for (let i = idx; i < idx + 5; i++) {
-            this.words.push(this.allWords[i]);
-          }
+          this.APIService.getWords({mode: 'f', filter: {tag: 'Pakman'}, offset: idx})
+          .subscribe((data) => {
+            if (data.data.length === 0) {
+              event.target.complete();
+              return;
+            }
+            this.words = this.words.concat(data.data);
+            event.target.complete();
+          });
         }
-        event.target.complete();
 
         // App logic to determine if all data is loaded
         // and disable the infinite scroll
-        if (this.randomFeature || this.words.length === this.allWords.length) {
+        if (this.randomFeature) {
           event.target.disabled = true;
-          console.log('loaded everything');
         }
       }, 500);
   }
+
+  randomize() {
+    this.randomFeature = !this.randomFeature;
+    this.getWords(event, this.randomFeature ? 'r' : '');
+  }
+
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: FilterModalPage,
+      cssClass: 'my-custom-class'
+    });
+    return await modal.present();
+  }
+
 }

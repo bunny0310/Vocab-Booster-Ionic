@@ -41,7 +41,7 @@
                 <br>
                 <ion-searchbar type="text" debounce="500" (ionChange)="addSearchTag($event)" formControlName="tag"></ion-searchbar>
                 <ion-progress-bar *ngIf="loadingTags" type="indeterminate" style="background-color: red !important"></ion-progress-bar>
-                <ion-list *ngIf="areTagsAvailable" style="min-height: 50px; height: auto; overflow: auto;">
+                <ion-list *ngIf="areTagsAvailable" style="min-height: 50px; height: 300px; overflow: auto;">
                     <ion-item *ngFor="let item of loadedTags"><ion-button color="primary" style="--ion-color-primary: red !important; text-transform:none!important;" (click)="addTag(item)">{{item}}</ion-button></ion-item>
                 </ion-list>
               </ion-item>

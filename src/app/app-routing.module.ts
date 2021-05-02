@@ -27,6 +27,14 @@ const routes: Routes = [
   {
     path: 'filter',
     loadChildren: () => import('./filter/filter.module').then( m => m.FilterPageModule)
+  },
+  {
+    path: 'view-word',
+    loadChildren: () => import('./view-word/view-word.module').then( m => m.ViewWordPageModule)
+  },
+  {
+    path: 'filter-modal',
+    loadChildren: () => import('./filter-modal/filter-modal.module').then( m => m.FilterModalPageModule)
   }
 ];
 @NgModule({
