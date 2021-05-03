@@ -7,10 +7,10 @@ import { catchError } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
 import { HTTP } from '@ionic-native/http/ngx';
 import { ToastController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 const {Http} = Plugins;
-const url = 'https://vocab-booster.herokuapp.com';
-// const url = 'http://localhost:3000';
+const url = environment.apiUrl;
 
 @Component({
   selector: 'app-login',
@@ -51,9 +51,8 @@ export class LoginPage implements OnInit {
       // if (error.status === 401) {
       //   this.invalidLogin = true;
       // }
-      const jwt: any = response.body;
-      console.log(jwt);
-      localStorage.setItem('user-vb-responsive', jwt.token);
+      const jwt: any = response.body.token;
+      localStorage.setItem('user-vb-responsive', jwt);
       this.router.navigate(['']);
     });
 

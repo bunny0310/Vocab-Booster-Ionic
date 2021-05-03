@@ -7,15 +7,12 @@
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-item>
-            <ion-button tooltip="Sort words" style="--background: #cc0000;" [ngStyle]="{'color': sorted ? 'green' : 'white'}" (click)="sort()"><ion-icon name="funnel"></ion-icon></ion-button>
-        </ion-item>
-        <ion-item>
           <ion-icon name="shuffle" [ngClass]="{'active-toggle' : randomFeature, 'inactive-toggle' : !randomFeature}"></ion-icon><ion-toggle style="--background-checked: #cc0000; --handle-background-checked: white;" [checked]="randomFeature" (ionChange)="randomize($event)"></ion-toggle>
         </ion-item>
       </ion-buttons>
     </ion-toolbar>
     <ion-fab vertical="top" horizontal="end" slot="fixed">
-      <ion-fab-button style="--background: #cc0000;" (click)="presentPopover()">
+      <ion-fab-button style="--background: #cc0000;" (click)="presentModal()">
         <ion-icon name="list"></ion-icon>
       </ion-fab-button>
     </ion-fab>
@@ -23,7 +20,11 @@
     <ion-item *ngFor="let word of words" >
         <ion-card style="min-width: 200px; width: auto">
           <ion-card-header>
-            <ion-card-title>{{word.name}}</ion-card-title>
+            <ion-card-title>
+                <ion-button color="light" (click)="navigate(word._id)">
+                  {{word.name}}
+                </ion-button>
+            </ion-card-title>
             <ion-card-subtitle>{{word.meaning}}</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
@@ -74,7 +75,7 @@
     <ion-list *ngIf="loading">
       <ion-item *ngFor="let x of skeletonArray">
         <ion-label>
-          <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+          <ion-skeleton-text animated></ion-skeleton-text>
         </ion-label>
       </ion-item>
     </ion-list>

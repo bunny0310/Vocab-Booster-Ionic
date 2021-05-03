@@ -4,9 +4,9 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import jwtDecode from 'jwt-decode';
 import { Subject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment.prod';
 
-const url = 'https://vocab-booster.herokuapp.com';
-// const url = 'http://localhost:3000';
+const url = environment.apiUrl;
 @Injectable({
   providedIn: 'root'
 })
@@ -25,22 +25,13 @@ export class AuthService {
     if (!token) {
       return false;
     }
-
-    const headers = new HttpHeaders({Authorization: 'Bearer ' + token});
-    this.http.get<any>(url + '/isLoggedIn', {headers})
-    .pipe(
-      catchError(this.handleError.bind(this))
-    )
-    .subscribe(res => {
-    });
-    console.log(this.getStatus());
-    return this.getStatus();
+    return true;
   }
 
 
-  public getUsername(token) {
+  public getUserInfo(token) {
     const decoded: any = jwtDecode(token);
-    return decoded.username;
+    return decoded;
   }
   public setUserInfo(token) {
     localStorage.setItem('user-vb-responsive', token);
@@ -49,13 +40,5 @@ export class AuthService {
   public logout() {
     localStorage.removeItem('user-vb-responsive');
     this.router.navigate(['/login']);
-  }
-
-  private handleError(error: HttpErrorResponse) {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong.
-    // Return an observable with a user-facing error message.
-    this.setStatus(false);
-    return throwError('Error!');
   }
 }
