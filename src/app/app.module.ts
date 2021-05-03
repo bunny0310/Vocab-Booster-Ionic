@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -17,7 +18,7 @@ import { HTTP } from '@ionic-native/http/ngx';
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, CommonModule,
-    IonicModule.forRoot(), AppRoutingModule, HttpClientModule, HeaderPageModule],
+    IonicModule.forRoot(), AppRoutingModule, HttpClientModule, HeaderPageModule, BrowserAnimationsModule],
   providers: [
     StatusBar,
     SplashScreen,

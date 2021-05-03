@@ -5,9 +5,9 @@ import { AuthService } from '../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
+import { environment } from 'src/environments/environment';
 
-// onst url = 'https://vocab-booster.herokuapp.com';
-const url = 'http://localhost:3000';
+const url = environment.apiUrl;
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
@@ -19,6 +19,7 @@ export class Tab2Page implements OnInit{
   tags: string[] = [];
   loadedTags: any[] = [];
   synonyms: string[] = [];
+  tagsSearchFieldFocused = false;
   areTagsAvailable = false; // to check if there are unique tags available
   isUnique = true; // boolean to check if the word typed in unique
   addWordForm = new FormGroup({
@@ -63,9 +64,11 @@ export class Tab2Page implements OnInit{
   checkWordForDuplicacy() {
     const val = this.addWordForm.get('name').value;
     if (val === '' || !(/\S/.test(val))) {
+      this.checkingForUniqueness = false;
       return;
     }
     this.checkingForUniqueness = true;
+    this.addWordForm.get('name').setErrors({loading: true});
     this.apiService.getWordUniquenessStatus(val)
     .subscribe((data) => {
       this.isUnique = data.status;
@@ -97,7 +100,7 @@ export class Tab2Page implements OnInit{
     this.searchTags(val);
   }
 
-  // method to append the tag to the list of tags 
+  // method to append the tag to the list of tags
   addTag(item) {
     this.tags.push(item);
     // this.addWordForm.get('tag').reset();
@@ -162,21 +165,25 @@ export class Tab2Page implements OnInit{
       types,
       synonyms
     };
-    const username = this.authService.isAuthenticated() ? this.authService.getUsername(localStorage.getItem('user-vb-responsive') ) : '';
-    if (username !== null) {
-      this.loading = true;
-      const headers = new HttpHeaders({Authorization: localStorage.getItem('user-vb-responsive')});
-      this.http.post(url + '/api/add-word', {word: JSON.stringify(word).replace('\'', '"'), username}, {observe: 'response', headers}).
-      subscribe((response) => {
-        if (response.status === 200) {
-          this.presentToast('Your word has been added!');
-          this.loading = false;
-          this.router.navigate(['']);
-        } else {
-          this.presentToast('Internal Server Error');
-          this.loading = false;
-        }
-      });
-    }
+    this.loading = true;
+    const headers = new HttpHeaders({Authorization: localStorage.getItem('user-vb-responsive')});
+    this.http.post(url + '/api/add-word', {word: JSON.stringify(word).replace('\'', '"')}, {observe: 'response', headers}).
+    subscribe((response) => {
+      if (response.status === 200) {
+        this.presentToast('Your word has been added!');
+        this.loading = false;
+        this.router.navigate(['']);
+      } else {
+        this.presentToast('Internal Server Error');
+        this.loading = false;
+      }
+    });
+  }
+
+  get name() { return this.addWordForm.get('name'); }
+
+  // check for blank spaces or empty
+  checkSpaces(str) {
+    return /\S/.test(str) && str !== '';
   }
 }

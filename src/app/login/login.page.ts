@@ -7,10 +7,10 @@ import { catchError } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
 import { HTTP } from '@ionic-native/http/ngx';
 import { ToastController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 const {Http} = Plugins;
-// const url = 'https://vocab-booster.herokuapp.com';
-const url = 'http://localhost:3000';
+const url = environment.apiUrl;
 
 @Component({
   selector: 'app-login',

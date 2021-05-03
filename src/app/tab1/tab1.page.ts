@@ -1,10 +1,12 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { ApiService } from '../api.service';
 import { AuthService } from '../auth.service';
-import { PopoverController, ModalController } from '@ionic/angular';
+import { PopoverController, ModalController, NavController } from '@ionic/angular';
 import { FilterPage } from '../filter/filter.page';
 import { Router } from '@angular/router';
 import { FilterModalPage } from '../filter-modal/filter-modal.page';
+import { delay } from 'q';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tab1',
@@ -21,7 +23,7 @@ export class Tab1Page implements OnInit, OnChanges{
   constructor(
     private APIService: ApiService,
     public authService: AuthService,
-    private popoverController: PopoverController,
+    private navController: NavController,
     private router: Router,
     private modalController: ModalController) {}
   ngOnInit() {
@@ -33,7 +35,7 @@ export class Tab1Page implements OnInit, OnChanges{
   }
 
   navigate(id) {
-    this.router.navigate([`/view-word`], {queryParams: {id}});
+    this.navController.navigateForward('view-word', {queryParams: {id}});
   }
   ngOnChanges() {
     this.getWords(null);
@@ -47,8 +49,8 @@ export class Tab1Page implements OnInit, OnChanges{
     this.APIService.getWords({mode, filter: {tag: 'Pakman'}, offset: 0})
     .subscribe((data) => {
       this.words = data.data;
+      this.loading = false;
     });
-    this.loading = false;
     if (event) {
       event.target.complete();
     }
@@ -58,7 +60,7 @@ export class Tab1Page implements OnInit, OnChanges{
       setTimeout(() => {
         if (!this.randomFeature) {
           const idx = this.words.length;
-          this.APIService.getWords({mode: 'f', filter: {tag: 'Pakman'}, offset: idx})
+          this.APIService.getWords({mode: '', filter: {}, offset: idx})
           .subscribe((data) => {
             if (data.data.length === 0) {
               event.target.complete();

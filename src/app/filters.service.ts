@@ -63,7 +63,5 @@ export class FiltersService {
       synonym: this.filterForm.get('synonym').value,
       sentence: this.filterForm.get('sentence').value,
     };
-    this.apiService.getWords({mode: 'search', options});
-    return this.apiService.getWordsUpdateListener();
   }
 }

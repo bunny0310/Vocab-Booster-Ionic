@@ -4,9 +4,9 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import jwtDecode from 'jwt-decode';
 import { Subject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment.prod';
 
-// const url = 'https://vocab-booster.herokuapp.com';
-const url = 'http://localhost:3000';
+const url = environment.apiUrl;
 @Injectable({
   providedIn: 'root'
 })

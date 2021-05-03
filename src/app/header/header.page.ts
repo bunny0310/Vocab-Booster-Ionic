@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +16,8 @@ export class HeaderPage implements OnInit {
   constructor(
     public authService: AuthService,
     public router: Router,
-    public navController: NavController
+    public navController: NavController,
+    public location: Location
     ) { }
 
     user;
@@ -26,6 +28,11 @@ export class HeaderPage implements OnInit {
 
   public goBack() {
     this.navController.back();
+  }
+
+  testURL() {
+    const regex = /^(\/tabs)/;
+    return regex.test(this.router.url);
   }
 
 }
